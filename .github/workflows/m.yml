@@ -1,0 +1,28 @@
+name: Linux_CI
+on:
+  push:
+    branches:
+      - main
+      - rel-*
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-11
+    steps:
+       - uses: actions/checkout@v4
+         with:
+           submodules: true
+
+       - uses: actions/setup-python@v5
+         with:
+           python-version: '3.9.x'
+           architecture: 'x64'
+
+       - name: 'Setup requirements'
+         run: |
+           python3 -m pip install onnxruntime==1.17.0
